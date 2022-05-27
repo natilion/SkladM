@@ -12,5 +12,5 @@ public var UserId : Int = 0
 val retrofit = Retrofit.Builder().baseUrl(link)
     .addConverterFactory(GsonConverterFactory.create()).build()
 val api = retrofit.create(ApiInterface::class.java)
-
+//main
 fun toast(con:Context, msg:String) = Toast.makeText(con, "${msg}", Toast.LENGTH_LONG).show()
