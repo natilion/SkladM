@@ -12,15 +12,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SelectCabinet : AppCompatActivity() {
-//    val retrofit = Retrofit.Builder().baseUrl(link)
-//        .addConverterFactory(GsonConverterFactory.create()).build()
-//    val api = retrofit.create(ApiInterface::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_cabinet)
 
-        val idBui = intent.getIntExtra("ID_Building", 0)
-        val NameBuilding = intent.getStringExtra("Name_Building")
+        val idBui = BuildingId
+        val NameBuilding = BuildingName
         getSupportActionBar()?.setTitle(NameBuilding)
         var Adapter:List<Cabinet>
         api.fetchAllCabinetbyBuilding(idBui).enqueue(object : Callback<List<Cabinet>>{

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spiner.ApiInterface
 import com.example.spiner.ItemAdaptor
 import com.example.spiner.R
 import com.example.spiner.models.*
@@ -14,16 +13,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(), ItemAdaptor.OnItemClickListener {
 
     var idCab : Long = 0
     var nameCab : String = ""
-//    val retrofit = Retrofit.Builder().baseUrl(link)
-//        .addConverterFactory(GsonConverterFactory.create()).build()
-//    val api = retrofit.create(ApiInterface::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,7 +30,6 @@ class MainActivity : AppCompatActivity(), ItemAdaptor.OnItemClickListener {
             override fun onFailure(call: Call<List<Cabinet>>, t: Throwable){}
 
         })
-//        toast(this,idCab.toString())
         getData(idCab)
 
         AddBtn.setOnClickListener {
@@ -54,7 +47,7 @@ class MainActivity : AppCompatActivity(), ItemAdaptor.OnItemClickListener {
         getData(idCab)
     }
 
-    fun getData(id:Long){
+    private fun getData(id:Long){
         api.fetchAllItemsByCabinet(id.toInt()).enqueue(object : Callback<List<Item>>{
             override fun onResponse(call: Call<List<Item>>, response: Response<List<Item>>) = showData(response.body()!!)
             override fun onFailure(call: Call<List<Item>>, t: Throwable) {}

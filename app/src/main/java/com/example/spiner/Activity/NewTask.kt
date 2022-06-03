@@ -28,7 +28,7 @@ class NewTask : AppCompatActivity() {
         newTask.Theme = Theme.text.toString()
         newTask.Discription = Discription.text.toString()
         newTask.Status = 0
-        newTask.User_ID = null //UserId
+        newTask.User_ID //UserId
         newTask.Building_ID = idBui
         api.addTask(newTask).enqueue(object : Callback<Unit>{
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {

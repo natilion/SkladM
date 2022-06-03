@@ -8,6 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 public val link : String = "https://e27c-91-215-188-116.eu.ngrok.io"
 public var UserId : Int = 0
+public var BuildingId : Int = 0
+public var BuildingName : String = ""
 
 val retrofit = Retrofit.Builder().baseUrl(link)
     .addConverterFactory(GsonConverterFactory.create()).build()

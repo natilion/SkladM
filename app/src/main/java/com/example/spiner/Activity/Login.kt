@@ -3,20 +3,14 @@ package com.example.spiner.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.view.get
-import com.example.spiner.ApiInterface
 import com.example.spiner.R
 import com.example.spiner.models.*
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
 
 class Login : AppCompatActivity() {
 
@@ -70,10 +64,10 @@ class Login : AppCompatActivity() {
 
     private fun new(idBuilding:Int, NameBuilding:String, idUser:Int) {
         startActivity(
-            Intent(this, SelectCabinet::class.java)
-                .putExtra("Name_Building", NameBuilding)
-                .putExtra("ID_Building", idBuilding.toInt())
+            Intent(this, SelectWork::class.java)
         )
         UserId = idUser
+        BuildingId = idBuilding
+        BuildingName = NameBuilding
     }
 }

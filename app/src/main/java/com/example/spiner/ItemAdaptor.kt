@@ -7,6 +7,7 @@ import android.widget.AdapterView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spiner.models.Item
+import com.example.spiner.models.Task
 import kotlinx.android.synthetic.main.item_row.view.*
 
 class ItemAdaptor(private val items: List<Item>, private val listener: OnItemClickListener) :

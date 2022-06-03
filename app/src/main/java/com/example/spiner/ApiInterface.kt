@@ -50,6 +50,12 @@ interface ApiInterface {
 
     //TASKS
 
+    @GET("/api/taskbybuilding/{id}")
+    fun fetchAllTasksByBuilding(@Path("id") id:Int): Call<List<Task>>
+
     @POST("/api/Task")
     fun addTask(@Body newTask: Task): Call<Unit>
+
+    @PUT("/api/Task/{id}")
+    fun editTask(@Path("id") id:Int, @Body newTask: Task): Call<Unit>
 }
