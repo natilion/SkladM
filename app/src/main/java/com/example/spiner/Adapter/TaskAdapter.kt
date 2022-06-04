@@ -1,19 +1,18 @@
-package com.example.spiner
+package com.example.spiner.Adapter
 
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spiner.Activity.SelectTask
+import com.example.spiner.R
 import com.example.spiner.models.Task
-import kotlinx.android.synthetic.main.item_row.view.*
 import kotlinx.android.synthetic.main.list_task.view.*
 
-class TaskAdaptor(private val tasks:List<Task>, private val listener: SelectTask):
-    RecyclerView.Adapter<TaskAdaptor.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskAdaptor.ViewHolder {
+class TaskAdapter(private val tasks:List<Task>, private val listener: SelectTask):
+    RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_task, parent, false)
         return ViewHolder(view)
     }

@@ -1,32 +1,21 @@
 package com.example.spiner.Activity
 
-import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Toast
-import com.example.spiner.ApiInterface
+import androidx.annotation.RequiresApi
 import com.example.spiner.R
 import com.example.spiner.models.*
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_add_edit_item.*
 import kotlinx.android.synthetic.main.activity_add_edit_item.About_Item
 import kotlinx.android.synthetic.main.activity_add_edit_item.Specification_Item
-import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.OkHttpClient
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class AddEditItem : AppCompatActivity() {
-//    val retrofit = Retrofit.Builder().baseUrl(link)
-//        .addConverterFactory(GsonConverterFactory.create()).build()
-//    val api = retrofit.create(ApiInterface::class.java)
-
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_item)
@@ -51,60 +40,71 @@ class AddEditItem : AppCompatActivity() {
         }
 
         Add.setOnClickListener {
-            var newItem = Item()
-            newItem.ID_Item = idItem
-            newItem.Name_Item = Name.text.toString()
-            newItem.Vendor_Code = Vendor_Code.text.toString()
-            newItem.Specification_Item = Specification_Item.text.toString()
-            newItem.About_Item = About_Item.text.toString()
-            newItem.User_ID = UserId
+            if(net(this@AddEditItem)) {
+                var newItem = Item()
+                newItem.ID_Item = idItem
+                newItem.Name_Item = Name.text.toString()
+                newItem.Vendor_Code = Vendor_Code.text.toString()
+                newItem.Specification_Item = Specification_Item.text.toString()
+                newItem.About_Item = About_Item.text.toString()
+                newItem.User_ID = UserId
+                if (Name.text.isBlank() || Vendor_Code.text.isBlank() || Specification_Item.text.isBlank() || About_Item.text.isBlank())
+                    toast(this@AddEditItem, "Заполните все поля")
+                else {
+                    if (idItem == 0) {
+                        newItem.Cabinet_ID = idCab.toInt()
+                        api.addItem(newItem).enqueue(object : Callback<Unit> {
+                            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                                Toast.makeText(
+                                    this@AddEditItem,
+                                    "Предмет добавлен",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                finish()
+                            }
 
-            if (idItem == 0) {
-                newItem.Cabinet_ID = idCab.toInt()
-                api.addItem(newItem).enqueue(object : Callback<Unit> {
+                            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                                Toast.makeText(this@AddEditItem, "${t}", Toast.LENGTH_SHORT).show()
+                                About_Item.setText(t.toString())
+                            }
+
+                        })
+                    } else {
+                        newItem.Cabinet_ID = idCabinet
+                        api.editItem(idItem, newItem).enqueue(object : Callback<Unit> {
+                            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                                Toast.makeText(
+                                    this@AddEditItem,
+                                    "Предмет отредактирован",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                finish()
+                            }
+
+                            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                                Toast.makeText(this@AddEditItem, "${t}", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    }
+                }
+            }
+        }
+
+        Del.setOnClickListener {
+            if(net(this@AddEditItem))
+                api.deleteOneItem(idItem).enqueue(object : Callback<Unit> {
                     override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                        Toast.makeText(this@AddEditItem, "Предмет добавлен", Toast.LENGTH_SHORT)
+                        Toast.makeText(this@AddEditItem, "Предмет удалён", Toast.LENGTH_SHORT)
                             .show()
                         finish()
                     }
 
                     override fun onFailure(call: Call<Unit>, t: Throwable) {
-                        Toast.makeText(this@AddEditItem, "${t}", Toast.LENGTH_SHORT).show()
-                        About_Item.setText(t.toString())
-                    }
-
-                })
-            } else {
-                newItem.Cabinet_ID = idCabinet
-                api.editItem(idItem, newItem).enqueue(object : Callback<Unit> {
-                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                        Toast.makeText(
-                            this@AddEditItem,
-                            "Предмет отредактирован",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@AddEditItem, "Ошибка = ${t}", Toast.LENGTH_SHORT).show()
                         finish()
                     }
-
-                    override fun onFailure(call: Call<Unit>, t: Throwable) {
-                        Toast.makeText(this@AddEditItem, "${t}", Toast.LENGTH_SHORT).show()
-                    }
                 })
-            }
-        }
-
-        Del.setOnClickListener {
-            api.deleteOneItem(idItem).enqueue(object : Callback<Unit> {
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    Toast.makeText(this@AddEditItem, "Предмет удалён", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    Toast.makeText(this@AddEditItem, "Ошибка = ${t}", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-            })
         }
     }
 }

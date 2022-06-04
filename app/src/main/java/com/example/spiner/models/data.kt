@@ -1,8 +1,11 @@
 package com.example.spiner.models
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
 import android.widget.Toast
-import com.example.spiner.ApiInterface
+import androidx.annotation.RequiresApi
+import com.example.spiner.Interface.ApiInterface
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -16,3 +19,9 @@ val retrofit = Retrofit.Builder().baseUrl(link)
 val api = retrofit.create(ApiInterface::class.java)
 //main
 fun toast(con:Context, msg:String) = Toast.makeText(con, "${msg}", Toast.LENGTH_LONG).show()
+
+@RequiresApi(Build.VERSION_CODES.M)
+fun net(con:Context): Boolean {
+    val cm : ConnectivityManager = con.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return cm.activeNetwork != null
+}

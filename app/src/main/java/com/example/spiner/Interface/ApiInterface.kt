@@ -1,4 +1,4 @@
-package com.example.spiner
+package com.example.spiner.Interface
 
 import androidx.core.location.LocationRequestCompat
 import com.example.spiner.models.*

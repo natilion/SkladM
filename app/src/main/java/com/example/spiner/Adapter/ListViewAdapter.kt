@@ -1,17 +1,13 @@
-package com.example.spiner
+package com.example.spiner.Adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import com.example.spiner.Activity.MainActivity
 import com.example.spiner.Activity.SelectCabinet
+import com.example.spiner.R
 import com.example.spiner.models.Cabinet
-import java.util.jar.Attributes
 
 class ListViewAdapter(val selectCabinet: SelectCabinet,
                       val Cabinets:List<Cabinet>):BaseAdapter(), View.OnClickListener {

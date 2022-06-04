@@ -1,12 +1,14 @@
 package com.example.spiner.Activity
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.widget.SearchView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.spiner.ItemAdaptor
+import com.example.spiner.Adapter.ItemAdapter
 import com.example.spiner.R
 import com.example.spiner.models.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,10 +16,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainActivity : AppCompatActivity(), ItemAdaptor.OnItemClickListener {
+class MainActivity : AppCompatActivity(), ItemAdapter.OnItemClickListener {
 
     var idCab : Long = 0
     var nameCab : String = ""
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,12 +28,13 @@ class MainActivity : AppCompatActivity(), ItemAdaptor.OnItemClickListener {
         idCab = intent.getLongExtra("ID_Cabinet", 0)
         api.fetchOneCabinet(idCab.toInt()).enqueue(object : Callback<List<Cabinet>>{
             override fun onResponse(call: Call<List<Cabinet>>, response: Response<List<Cabinet>>) {
-                getSupportActionBar()?.setTitle(response.body()!!.get(0).Name_Cabinet)
+                getSupportActionBar()?.setTitle("Оборудование кабинета: "+response.body()!!.get(0).Name_Cabinet)
             }
             override fun onFailure(call: Call<List<Cabinet>>, t: Throwable){}
 
         })
-        getData(idCab)
+        if(net(this@MainActivity))
+            getData(idCab)
 
         AddBtn.setOnClickListener {
             startActivity(Intent(this, AddEditItem::class.java).putExtra("idCabinet", idCab))
@@ -57,7 +61,7 @@ class MainActivity : AppCompatActivity(), ItemAdaptor.OnItemClickListener {
     private fun showData(items: List<Item>){
         recycleView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdaptor(items, this@MainActivity)
+            adapter = ItemAdapter(items, this@MainActivity)
         }
     }
 

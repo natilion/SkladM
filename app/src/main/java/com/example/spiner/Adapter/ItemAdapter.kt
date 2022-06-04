@@ -1,17 +1,16 @@
-package com.example.spiner
+package com.example.spiner.Adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.spiner.R
 import com.example.spiner.models.Item
-import com.example.spiner.models.Task
 import kotlinx.android.synthetic.main.item_row.view.*
 
-class ItemAdaptor(private val items: List<Item>, private val listener: OnItemClickListener) :
-    RecyclerView.Adapter<ItemAdaptor.ViewHolder>() {
+class ItemAdapter(private val items: List<Item>, private val listener: OnItemClickListener) :
+    RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_row, parent, false)

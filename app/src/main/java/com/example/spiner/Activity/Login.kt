@@ -1,10 +1,11 @@
 package com.example.spiner.Activity
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.spiner.R
 import com.example.spiner.models.*
 import kotlinx.android.synthetic.main.activity_login.*
@@ -13,40 +14,50 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class Login : AppCompatActivity() {
-
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         getSupportActionBar()?.setTitle("Авторизация")
-
-        loudData()
+        if (net(this))
+            loudData()
+        else toast(this, "Нет соединения с интернетом")
         button.setOnClickListener {
-            val login:String = Login.text.toString()
-            val password:String = Password.text.toString()
+            if(net(this))
+                if (Login.text.isBlank() || Password.text.isBlank())
+                    toast(this@Login, "Заполните все поля")
+                else {
+                    val login: String = Login.text.toString()
+                    val password: String = Password.text.toString()
 
-            api.loginUser(login, password).enqueue(object :Callback<List<User>>{
-                override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                    if(response.code() == 200) {
-                        Toast.makeText(this@Login, "${spinerBuilding.selectedItem}", Toast.LENGTH_SHORT).show()
-                        if (response.body()!!.isNotEmpty()) new(
-                            spinerBuilding.selectedItemPosition + 1,
-                            spinerBuilding.selectedItem.toString(),
-                            response.body()!!.get(0).ID_User
-                        )
-                    }
+                    api.loginUser(login, password).enqueue(object : Callback<List<User>> {
+                        override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                            if (response.code() == 200) {
+                                if (response.body()!!.isNotEmpty()) new(
+                                    spinerBuilding.selectedItemPosition + 1,
+                                    spinerBuilding.selectedItem.toString(),
+                                    response.body()!!.get(0).ID_User
+                                )
+                            }
+                        }
+                        override fun onFailure(call: Call<List<User>>, t: Throwable) = toast(this@Login, "Нет соединения")
+                    })
                 }
-                override fun onFailure(call: Call<List<User>>, t: Throwable){ }
-            })
+            else toast(this, "Нет соединения с интернетом")
         }
         task.setOnClickListener {
-            startActivity(Intent(this, NewTask::class.java)
-                .putExtra("ID_Building", spinerBuilding.selectedItemPosition+1))
+            if(net(this))
+                startActivity(Intent(this, NewTask::class.java)
+                    .putExtra("ID_Building", spinerBuilding.selectedItemPosition+1))
+            else toast(this, "Нет соединения с интернетом")
         }
     }
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
-        loudData()
+        if(net(this)) loudData()
+        else toast(this, "Нет соединения с интернетом")
     }
 
     private fun loudData(){
@@ -69,5 +80,7 @@ class Login : AppCompatActivity() {
         UserId = idUser
         BuildingId = idBuilding
         BuildingName = NameBuilding
+        Login.text.clear()
+        Password.text.clear()
     }
 }

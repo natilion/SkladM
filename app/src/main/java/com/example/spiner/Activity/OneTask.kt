@@ -1,7 +1,9 @@
 package com.example.spiner.Activity
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import com.example.spiner.R
 import com.example.spiner.models.*
 import kotlinx.android.synthetic.main.activity_one_task.*
@@ -12,6 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class OneTask : AppCompatActivity() {
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_one_task)
@@ -22,6 +25,8 @@ class OneTask : AppCompatActivity() {
         val status:Int = intent.getIntExtra("Status", 0)
         val user_ID:Int = intent.getIntExtra("User_ID", 0)
         val building_ID:Int = intent.getIntExtra("Building_ID", 0)
+
+        getSupportActionBar()?.setTitle("Заявка: "+BuildingName)
 
         Theme.setText(theme)
         Discription.setText(discription)
@@ -35,16 +40,16 @@ class OneTask : AppCompatActivity() {
         newTask.Building_ID = BuildingId
 
         Edit.setOnClickListener {
-//            toast(this@OneTask, "${IDTask} ${theme} ${discription} ${status} ${user_ID} ${building_ID}")
-            api.editTask(IDTask, newTask).enqueue(object : Callback<Unit>{
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    toast(this@OneTask, "Yes")
-                }
-
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    toast(this@OneTask, "No")
-                }
-            })
+            if(net(this)) {
+                if (Theme.text.isBlank() || Discription.text.isBlank())
+                    toast(this@OneTask, "Заполните все поля")
+                else
+                    api.editTask(IDTask, newTask).enqueue(object : Callback<Unit> {
+                        override fun onResponse(call: Call<Unit>, response: Response<Unit>) = finish()
+                        override fun onFailure(call: Call<Unit>, t: Throwable) = toast(this@OneTask, "No")
+                    })
+            }
+            else toast(this, "Нет соединения с интернетом")
         }
     }
 }
